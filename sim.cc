@@ -76,6 +76,9 @@ int main (int argc, char *argv[])
   std::string queue_disc_type = "ns3::PfifoFastQueueDisc";
   std::string recovery = "ns3::TcpClassicRecovery";
 
+  double rew = 1.0;
+  double pen = -1.0;
+
   CommandLine cmd;
   // required parameters for OpenGym interface
   cmd.AddValue ("openGymPort", "Port number for OpenGym env. Default: 5555", openGymPort);
@@ -101,6 +104,8 @@ int main (int argc, char *argv[])
   cmd.AddValue ("queue_disc_type", "Queue disc type for gateway (e.g. ns3::CoDelQueueDisc)", queue_disc_type);
   cmd.AddValue ("sack", "Enable or disable SACK option", sack);
   cmd.AddValue ("recovery", "Recovery algorithm type to use (e.g., ns3::TcpPrrRecovery", recovery);
+  cmd.AddValue ("reward", "Agent reward value", rew);
+  cmd.AddValue ("penalty", "Agent penalty value", pen);
   cmd.Parse (argc, argv);
 
   transport_prot = std::string ("ns3::") + transport_prot;
@@ -135,8 +140,8 @@ int main (int argc, char *argv[])
     openGymInterface = OpenGymInterface::Get(openGymPort);
     Config::SetDefault ("ns3::TcpRlTimeBased::StepTime", TimeValue (Seconds(tcpEnvTimeStep))); // Time step of env
     Config::SetDefault ("ns3::TcpRlTimeBased::Duration", TimeValue (Seconds(duration))); // Duration of env sim
-    Config::SetDefault ("ns3::TcpRlTimeBased::Reward", DoubleValue (1.0)); // Reward
-    Config::SetDefault ("ns3::TcpRlTimeBased::Penalty", DoubleValue (-1.0)); // Penalty
+    Config::SetDefault ("ns3::TcpRlTimeBased::Reward", DoubleValue (rew)); // Reward
+    Config::SetDefault ("ns3::TcpRlTimeBased::Penalty", DoubleValue (pen)); // Penalty
   }
 
   // Calculate the ADU size

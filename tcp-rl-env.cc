@@ -531,6 +531,27 @@ TcpTimeStepGymEnv::GetObservation()
   }
   box->AddValue(avgRtt.GetMicroSeconds ());
 
+  //m_minRtt
+  box->AddValue(m_tcb->m_minRtt.GetMicroSeconds ());
+
+  //avgInterTx
+  Time avgInterTx = Seconds(0.0);
+  if (m_interTxTimeNum) {
+    avgInterTx = m_interTxTimeSum / m_interTxTimeNum;
+  }
+  box->AddValue(avgInterTx.GetMicroSeconds ());
+
+  //avgInterRx
+  Time avgInterRx = Seconds(0.0);
+  if (m_interRxTimeNum) {
+    avgInterRx = m_interRxTimeSum / m_interRxTimeNum;
+  }
+  box->AddValue(avgInterRx.GetMicroSeconds ());
+
+  //throughput  bytes/s
+  float throughput = (segmentsAckedSum * m_tcb->m_segmentSize) / m_timeStep.GetSeconds();
+  box->AddValue(throughput);
+
 /*---------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------*/
@@ -562,27 +583,6 @@ TcpTimeStepGymEnv::GetObservation()
 /*---------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------*/
-
-  //m_minRtt
-  box->AddValue(m_tcb->m_minRtt.GetMicroSeconds ());
-
-  //avgInterTx
-  Time avgInterTx = Seconds(0.0);
-  if (m_interTxTimeNum) {
-    avgInterTx = m_interTxTimeSum / m_interTxTimeNum;
-  }
-  box->AddValue(avgInterTx.GetMicroSeconds ());
-
-  //avgInterRx
-  Time avgInterRx = Seconds(0.0);
-  if (m_interRxTimeNum) {
-    avgInterRx = m_interRxTimeSum / m_interRxTimeNum;
-  }
-  box->AddValue(avgInterRx.GetMicroSeconds ());
-
-  //throughput  bytes/s
-  float throughput = (segmentsAckedSum * m_tcb->m_segmentSize) / m_timeStep.GetSeconds();
-  box->AddValue(throughput);
 
   // Print data
   NS_LOG_INFO ("MyGetObservation: " << box);
